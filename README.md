@@ -280,7 +280,7 @@ Activity history, ASG'nin hem scale-out hem scale-in yaptığını gösteriyor. 
 
 Log group'larda (`wordpress-access-log`, `wordpress-error-log`) gerçek log satırlarının düşmesi, agent'ın çalıştığını ve IAM role'ün doğru olduğunu gösteriyor.
 
-Dashboard'a EC2 CPU, ASG instance sayısı, NLB bağlantı sayısı ve RDS metriklerini widget olarak ekledim.
+Dashboard'a bazi metriklerini widget olarak ekledim.
 
 ![CloudWatch dashboard](screenshots/02-cloudwatch-dashboard.png)
 
