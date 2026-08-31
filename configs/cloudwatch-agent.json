@@ -1,0 +1,20 @@
+{
+  "logs": {
+    "logs_collected": {
+      "files": {
+        "collect_list": [
+          {
+            "file_path": "/var/log/httpd/access_log",
+            "log_group_name": "wordpress-access-log",
+            "log_stream_name": "{instance_id}"
+          },
+          {
+            "file_path": "/var/log/httpd/error_log",
+            "log_group_name": "wordpress-error-log",
+            "log_stream_name": "{instance_id}"
+          }
+        ]
+      }
+    }
+  }
+}

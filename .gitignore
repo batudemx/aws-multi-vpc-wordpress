@@ -1,0 +1,14 @@
+# Anahtar dosyaları
+*.pem
+*.ppk
+
+# Ortam değişkenleri
+.env
+credentials
+
+# İşletim sistemi
+.DS_Store
+Thumbs.db
+
+# Loglar
+*.log

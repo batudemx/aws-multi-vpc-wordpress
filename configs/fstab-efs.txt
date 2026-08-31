@@ -1,0 +1,31 @@
+# /etc/fstab içine eklenen satır
+# EFS'in reboot sonrası da otomatik mount edilmesi için
+
+fs-XXXXXXXXXXXXXXXXX:/ /var/www/html efs defaults,_netdev,tls 0 0
+
+
+# Parametreler:
+#   _netdev  → ağ hazır olana kadar mount denemesini beklet.
+#              Bu olmadan makine boot ederken ağ henüz ayakta değilken
+#              mount denemesi yapıyor ve başarısız oluyor.
+#              ASG'nin açtığı yeni makineler için kritik.
+#   tls      → EC2 ile EFS arasındaki trafiği şifrele
+#   defaults → standart mount seçenekleri (rw, suid, dev, exec, auto, nouser, async)
+#   0 0      → dump ve fsck devre dışı (ağ dosya sistemi için doğrusu bu)
+
+
+# Doğrulama:
+#   df -h | grep html
+#
+# Beklenen çıktı:
+#   127.0.0.1:/  8.0E  124M  8.0E  1%  /var/www/html
+#
+# Not: 127.0.0.1 görünmesi normal — amazon-efs-utils, TLS tüneli için
+# yerel bir stunnel process'i çalıştırıyor, mount o tünel üzerinden yapılıyor.
+# 8.0E (exabyte) da normal, EFS boyut sınırı koymuyor.
+
+
+# Kalıcılık testi (reboot etmeden):
+#   sudo umount /var/www/html
+#   sudo mount -a
+#   df -h | grep html
