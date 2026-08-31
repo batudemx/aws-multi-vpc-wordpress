@@ -54,6 +54,8 @@ graph TB
 
 **VPCB** ayrı bir ağ. İçinde sadece bir Windows Server var, oradan WordPress'in kurulumunu tamamladım. Bu, peering'in gerçekten çalıştığını kanıtlamak için iyi bir test oldu — iki farklı VPC'deki makineler `proje.local` üzerinden birbirini bulabiliyor.
 
+![VPC peering bağlantısı](screenshots/04-peering-active.png)
+
 ---
 
 ## Ağ planı
@@ -98,6 +100,12 @@ Her VPC'de biri public biri private olmak üzere ikişer route table var.
 VPCB'de de aynı yapı, CIDR'lar ters. Peering satırını **her iki VPC'nin tüm route table'larına** eklemek gerekiyor — sadece bir tarafa eklemek yetmiyor, cevap paketi dönemiyor.
 
 Private subnet'lerde NAT Gateway kullanmadım. RDS ve EFS internete çıkmıyor, NLB de zaten Internal. Gereksiz maliyetten kaçındım.
+
+### Route 53 private hosted zone
+
+`proje.local` zone'u her iki VPC'ye de associate edildi. `www.proje.local` kaydı, Internal NLB'yi gösteren bir alias.
+
+![Route 53 hosted zone kayıtları](screenshots/03-hosted-zone-records.png)
 
 ---
 
@@ -249,6 +257,8 @@ VPCB'deki Windows makineden, Edge tarayıcısıyla:
 http://www.proje.local/wp-admin/install.php
 ```
 
+![VPCB'deki Windows makineden açılan WordPress kurulum ekranı](screenshots/01-wordpress-install-from-vpcb.png)
+
 WordPress kurulum ekranının açılması, projenin en kritik doğrulaması oldu. Çünkü bu tek sayfa şunların **hepsinin** aynı anda çalıştığını gösteriyor:
 
 - VPC Peering (VPCB → VPCA)
@@ -262,9 +272,17 @@ WordPress kurulum ekranının açılması, projenin en kritik doğrulaması oldu
 
 ASG'nin açtığı makineler target group'ta `healthy` olduğunda, AMI'nin doğru çalıştığı doğrulanmış oluyor — yeni makineler otomatik olarak httpd'yi başlatıyor, EFS'i mount ediyor ve WordPress'i servis ediyor.
 
+Activity history, ASG'nin hem scale-out hem scale-in yaptığını gösteriyor. `Cause` sütununda hangi kısıt değişikliğinin hangi işlemi tetiklediği yazılı.
+
+![Auto Scaling Group activity history](screenshots/05-asg-activity.png)
+
 ### CloudWatch
 
 Log group'larda (`wordpress-access-log`, `wordpress-error-log`) gerçek log satırlarının düşmesi, agent'ın çalıştığını ve IAM role'ün doğru olduğunu gösteriyor.
+
+Dashboard'a EC2 CPU, ASG instance sayısı, NLB bağlantı sayısı ve RDS metriklerini widget olarak ekledim.
+
+![CloudWatch dashboard](screenshots/02-cloudwatch-dashboard.png)
 
 ---
 
@@ -318,8 +336,8 @@ Hepsinin detaylı teşhis sürecini [troubleshooting.md](troubleshooting.md) dos
 ## Dosyalar
 
 - **[troubleshooting.md](troubleshooting.md)** — takıldığım dört yer, nasıl teşhis ettiğim ve çözümler
-- `configs/` — CloudWatch agent config, fstab satırı, SG kuralları
-- `scripts/` — WordPress kurulum adımları
+- `configs/` — CloudWatch agent config, fstab satırı, Security Group kuralları
+- `scripts/` — WordPress, EFS mount ve CloudWatch Agent kurulum adımları
 - `screenshots/` — çalışan sistemin ekran görüntüleri
 
 ---
