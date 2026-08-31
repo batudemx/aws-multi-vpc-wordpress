@@ -259,7 +259,7 @@ http://www.proje.local/wp-admin/install.php
 
 ![VPCB'deki Windows makineden açılan WordPress kurulum ekranı](screenshots/01-wordpress-install-from-vpcb.png)
 
-WordPress kurulum ekranının açılması, projenin en kritik doğrulaması oldu. Çünkü bu tek sayfa şunların **hepsinin** aynı anda çalıştığını gösteriyor:
+WordPress kurulum ekranının açılması, projenin en kritik doğrulaması oldu aynı zamanda projenın bıktıran tarafı :) Çünkü bu tek sayfa şunların **hepsinin** aynı anda çalıştığını gösteriyor:
 
 - VPC Peering (VPCB → VPCA)
 - Route 53 private zone'un iki VPC'den de çözümlenmesi
@@ -305,18 +305,17 @@ En pahalı kalem load balancer. Saatlik sabit ücret alıyor, kullanılsa da kul
 
 **Silme sırası önemli:**
 
-1. **ASG'yi sil** (önce desired/min/max'ı 0 yap) — yoksa sildiğin makinelerin yerine yenisini açar
+1. **ASG'yi sil** 
 2. Kalan EC2'leri terminate et
 3. NLB'yi sil
 4. Target group'u sil
 5. RDS'i sil (final snapshot isteyip istemediğini sorar)
 6. EFS'i sil
-7. Elastic IP'leri release et — **bağlı değilken ücretli**, unutulursa aylarca para yakar
+7. Elastic IP'leri release et 
 8. NAT Gateway varsa sil
 9. Peering connection'ı sil
-10. VPC'leri sil (içindeki subnet, route table, IGW ile birlikte gider)
+10. VPC'leri sil
 
-En sık unutulan: **boşta kalan Elastic IP** ve **silinmemiş EBS volume'lar**. İkisi de sessizce fatura biriktirir.
 
 ---
 
